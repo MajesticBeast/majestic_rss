@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -67,6 +68,10 @@ func main() {
 		Addr:    ":" + port,
 		Handler: r,
 	}
+
+	const collectionConcurrency = 10
+	const collectionInterval = 5 * time.Minute
+	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
 	log.Println("Listening at: " + port)
 	log.Fatal(server.ListenAndServe())
