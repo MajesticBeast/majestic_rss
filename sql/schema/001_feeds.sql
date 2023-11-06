@@ -1,12 +1,11 @@
 -- +goose Up
 CREATE TABLE feeds (
-  id UUID PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
+  last_post_title VARCHAR(225) NOT NULL,
   url VARCHAR(255) UNIQUE NOT NULL,
-  user_id UUID NOT NULL,
   created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
-     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+  updated_at TIMESTAMP NOT NULL
 );
 
 -- +goose Down

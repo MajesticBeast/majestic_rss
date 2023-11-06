@@ -1,18 +1,9 @@
--- name: CreateFeed :one
-INSERT INTO feeds (id, name, url, user_id, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING *;
+-- name: CreateFeed :exec
+INSERT INTO feeds (name, url, last_post_title, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?);
 
 -- name: GetFeeds :many
 SELECT * FROM feeds;
 
--- name: GetNextFeedsToFetch :many
-SELECT * FROM feeds
-ORDER BY last_fetched_at ASC
-LIMIT $1;
-
--- name: MarkFeedFetched :one
-UPDATE feeds
-SET last_fetched_at = NOW(), updated_at = NOW()
-WHERE id = $1
-returning *;
+-- name: UpdateFeedLastPostTitle :exec
+UPDATE feeds SET last_post_title = ?, updated_at = ? WHERE id = ?;

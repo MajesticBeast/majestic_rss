@@ -5,35 +5,17 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 	"github.com/majesticbeast/majestic_rss/internal/database"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type apiConfig struct {
 	DB *database.Queries
-}
-
-type authedHandler func(http.ResponseWriter, *http.Request, database.User)
-
-func (s *apiConfig) middlewareAuth(handler authedHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		apikey := r.Header.Get("Authorization")
-		apikey = strings.TrimPrefix(apikey, "ApiKey ")
-
-		user, err := s.DB.GetUserByAPIKey(r.Context(), apikey)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "Unauthorized")
-			return
-		}
-
-		handler(w, r, user)
-	}
 }
 
 func main() {
@@ -44,7 +26,7 @@ func main() {
 	port := os.Getenv("PORT")
 	dbconn := os.Getenv("DBCONN")
 
-	db, err := sql.Open("postgres", dbconn)
+	db, err := sql.Open("sqlite3", dbconn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +52,7 @@ func main() {
 	}
 
 	const collectionConcurrency = 10
-	const collectionInterval = 5 * time.Minute
+	const collectionInterval = 5 * time.Second
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
 	log.Println("Listening at: " + port)
