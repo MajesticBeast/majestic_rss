@@ -11,23 +11,6 @@ import (
 	"time"
 )
 
-//type RSSItem struct {
-//	Title       string `xml:"title"`
-//	Link        string `xml:"link"`
-//	Description string `xml:"description"`
-//	PubDate     string `xml:"pubDate"`
-//}
-//
-//type RSSFeed struct {
-//	Channel struct {
-//		Title       string    `xml:"title"`
-//		Link        string    `xml:"link"`
-//		Description string    `xml:"description"`
-//		PubDate     string    `xml:"pubDate"`
-//		Item        []RSSItem `xml:"item"`
-//	} `xml:"channel"`
-//}
-
 type webhook struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -58,8 +41,6 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	}
 	log.Printf("Feed %s collected, %v posts found", feed.Name, len(feedData.Items))
 
-	// If feed title is the same as the last post title, don't do anything
-	// Otherwise, update the feed's last post title and post to discord webhook
 	if len(feedData.Items) == 0 {
 		log.Println("Feed is empty!")
 		return

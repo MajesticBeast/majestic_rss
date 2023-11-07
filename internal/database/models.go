@@ -9,7 +9,7 @@ import (
 )
 
 type Feed struct {
-	ID            int64
+	ID            int32
 	Name          string
 	LastPostTitle string
 	Url           string

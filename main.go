@@ -10,8 +10,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/majesticbeast/majestic_rss/internal/database"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type apiConfig struct {
@@ -21,12 +21,12 @@ type apiConfig struct {
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 	port := os.Getenv("PORT")
 	dbconn := os.Getenv("DBCONN")
 
-	db, err := sql.Open("sqlite3", dbconn)
+	db, err := sql.Open("postgres", dbconn)
 	if err != nil {
 		log.Fatal(err)
 	}
