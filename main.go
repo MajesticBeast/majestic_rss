@@ -52,7 +52,7 @@ func main() {
 	}
 
 	const collectionConcurrency = 10
-	const collectionInterval = 5 * time.Second
+	const collectionInterval = 5 * time.Hour
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
 	log.Println("Listening at: " + port)
