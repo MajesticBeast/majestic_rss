@@ -12,7 +12,8 @@ type Feed struct {
 	ID            int32
 	Name          string
 	LastPostTitle string
-	Url           string
+	FeedUrl       string
+	WebhookUrl    string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

@@ -11,13 +11,14 @@ import (
 )
 
 const createFeed = `-- name: CreateFeed :exec
-INSERT INTO feeds (name, url, last_post_title, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO feeds (name, feed_url, webhook_url, last_post_title, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6)
 `
 
 type CreateFeedParams struct {
 	Name          string
-	Url           string
+	FeedUrl       string
+	WebhookUrl    string
 	LastPostTitle string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
@@ -26,7 +27,8 @@ type CreateFeedParams struct {
 func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) error {
 	_, err := q.db.ExecContext(ctx, createFeed,
 		arg.Name,
-		arg.Url,
+		arg.FeedUrl,
+		arg.WebhookUrl,
 		arg.LastPostTitle,
 		arg.CreatedAt,
 		arg.UpdatedAt,
@@ -35,7 +37,7 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) error {
 }
 
 const getFeeds = `-- name: GetFeeds :many
-SELECT id, name, last_post_title, url, created_at, updated_at FROM feeds
+SELECT id, name, last_post_title, feed_url, webhook_url, created_at, updated_at FROM feeds
 `
 
 func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
@@ -51,7 +53,8 @@ func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
 			&i.ID,
 			&i.Name,
 			&i.LastPostTitle,
-			&i.Url,
+			&i.FeedUrl,
+			&i.WebhookUrl,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

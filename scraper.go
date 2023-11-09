@@ -6,7 +6,7 @@ import (
 	"github.com/majesticbeast/majestic_rss/internal/database"
 	"github.com/mmcdole/gofeed"
 	"log"
-	"os"
+
 	"sync"
 	"time"
 )
@@ -14,7 +14,8 @@ import (
 type webhook struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	URL         string `json:"url"`
+	FeedURL     string `json:"feed_url"`
+	WebhookURL  string `json:"webhook_url"`
 	FeedName    string `json:"feed_name"`
 }
 
@@ -31,7 +32,7 @@ func fetchAndParseFeed(url string) (*gofeed.Feed, error) {
 func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	defer wg.Done()
 
-	feedData, err := fetchAndParseFeed(feed.Url)
+	feedData, err := fetchAndParseFeed(feed.FeedUrl)
 	if err != nil {
 		log.Printf("Couldn't collect feed %s: %v", feed.Name, err)
 		return
@@ -63,7 +64,8 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	hook := webhook{
 		Title:       feedData.Items[0].Title,
 		Description: feedData.Items[0].Description,
-		URL:         feedData.Items[0].Link,
+		FeedURL:     feedData.Items[0].Link,
+		WebhookURL:  feed.WebhookUrl,
 		FeedName:    feed.Name,
 	}
 
@@ -92,16 +94,17 @@ func startScraping(db *database.Queries, concurrency int, timeBetweenRequest tim
 }
 
 func postToDiscord(hook webhook) {
+	// TODO: Add col in db to store webhook URL - this is messy and stupid
 	discordBotUser := hook.FeedName
-	content := hook.URL
-	webhookUrl := os.Getenv("WEBHOOK_URL")
+	content := hook.FeedURL
+	webhookURL := hook.WebhookURL
 
 	message := discordwebhook.Message{
 		Username: &discordBotUser,
 		Content:  &content,
 	}
 
-	if err := sendWebhook(webhookUrl, message); err != nil {
+	if err := sendWebhook(webhookURL, message); err != nil {
 		log.Println("Couldn't send webhook:", err)
 	}
 }

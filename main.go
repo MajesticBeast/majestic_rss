@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -25,6 +26,10 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	dbconn := os.Getenv("DBCONN")
+	interval, err := strconv.Atoi(os.Getenv("INTERVAL"))
+	if err != nil {
+		log.Fatal("Unable to set interval: ", err)
+	}
 
 	db, err := sql.Open("postgres", dbconn)
 	if err != nil {
@@ -51,8 +56,9 @@ func main() {
 		Handler: r,
 	}
 
+	// TODO: Use env var for concurrency and interval
 	const collectionConcurrency = 10
-	const collectionInterval = 5 * time.Hour
+	collectionInterval := time.Duration(interval) * time.Minute
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
 	log.Println("Listening at: " + port)

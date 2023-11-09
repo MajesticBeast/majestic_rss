@@ -33,8 +33,9 @@ func (s *apiConfig) handleGetFeeds(w http.ResponseWriter, r *http.Request) {
 
 func (s *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
+		Name       string `json:"name"`
+		FeedURL    string `json:"feed_url"`
+		WebhookURL string `json:"webhook_url"`
 	}
 	params := parameters{}
 	decoder := json.NewDecoder(r.Body).Decode(&params)
@@ -45,10 +46,11 @@ func (s *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	err := s.DB.CreateFeed(r.Context(), database.CreateFeedParams{
-		Name:      params.Name,
-		Url:       params.URL,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		Name:       params.Name,
+		FeedUrl:    params.FeedURL,
+		WebhookUrl: params.WebhookURL,
+		CreatedAt:  time.Now().UTC(),
+		UpdatedAt:  time.Now().UTC(),
 	})
 
 	if err != nil {
