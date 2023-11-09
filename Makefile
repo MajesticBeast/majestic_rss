@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := run
+.DEFAULT_GOAL := clean
 
 .PHONY: fmt vet build clean migrate
 
@@ -13,7 +13,7 @@ $(MIGRATION_FLAG_FILE):
 	@goose -dir "./sql/schema" postgres $(DBCONN) up
 	@touch $(MIGRATION_FLAG_FILE)
 
-fmt:
+fmt: migrate
 	@echo "--> Formatting code..."
 	@go fmt ./...
 
