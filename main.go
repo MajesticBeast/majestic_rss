@@ -26,7 +26,10 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	dbconn := os.Getenv("DBCONN")
-	concurrency := os.Getenv("CONCURRENCY")
+	concurrency, err := strconv.Atoi(os.Getenv("CONCURRENCY"))
+	if err != nil {
+		log.Fatal("Unable to set concurrency: ", err)
+	}
 	interval, err := strconv.Atoi(os.Getenv("INTERVAL"))
 	if err != nil {
 		log.Fatal("Unable to set interval: ", err)
