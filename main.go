@@ -56,8 +56,7 @@ func main() {
 		Handler: r,
 	}
 
-	// TODO: Use env var for concurrency and interval
-	const collectionConcurrency = 10
+	collectionConcurrency := concurrency
 	collectionInterval := time.Duration(interval) * time.Minute
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
