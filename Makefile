@@ -3,7 +3,6 @@
 .PHONY: fmt vet build clean migrate
 
 MIGRATION_FLAG_FILE = .migration_done
-IMAGE_NAME := "rss_agg:latest"
 
 migrate: $(MIGRATION_FLAG_FILE)
 	@echo "Running migrations..."

@@ -1,0 +1,61 @@
+{{ template "header.html" . }}
+<div class="container-fluid pt-5">
+    <div class="row">
+        <div class="col">
+            <h4>Add Feed</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form hx-post="./feeds">
+                <div class="row mb-5">
+                    <div class="col-1">
+                        Name:<br>
+                        Webhook URL:<br>
+                        Feed URL:<br>
+                    </div>
+                    <div class="col">
+                        <input type="text" name="name"><br>
+                        <input type="text" size="110" name="webhook_url"><br>
+                        <input type="text" size="50" name="feed_url"><br>
+                    </div>
+                    <div class="row">
+                        <div class="col-1">
+                            <button class="btn btn-success">Create New Feed</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {{ range $k, $v := .Feeds }}
+        <div class="row gy-5" hx-target="this" hx-swap="outerHTML">
+            <div class="col-1">
+                ID:<br>
+                Name:<br>
+                Created:<br>
+                Updated:<br>
+                Webhook URL:<br>
+                Feed URL:<br>
+            </div>
+            <div class="col">
+                {{ $v.ID }}<br>
+                {{ $v.Name }}<br>
+                {{ $v.CreatedAt }}<br>
+                {{ $v.UpdatedAt }}<br>
+                {{ $v.WebhookUrl }}<br>
+                {{ $v.FeedUrl }}<br>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <button class="btn btn-info" hx-trigger="click" hx-get="./admin/feeds/update/{{$v.ID}}">Edit</button>
+                    <button class="btn btn-danger" hx-delete="./admin/feeds/delete/{{$v.ID}}">Delete</button>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+</body>
+</html>

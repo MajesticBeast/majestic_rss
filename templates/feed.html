@@ -1,0 +1,24 @@
+<div class="row gy-5" hx-target="this" hx-swap="outerHTML">
+    <div class="col-1">
+        ID:<br>
+        Name:<br>
+        Created:<br>
+        Updated:<br>
+        Webhook URL:<br>
+        Feed URL:<br>
+    </div>
+    <div class="col">
+        {{ .ID }}<br>
+        {{ .Name }}<br>
+        {{ .CreatedAt }}<br>
+        {{ .UpdatedAt }}<br>
+        {{ .WebhookUrl }}<br>
+        {{ .FeedUrl }}<br>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            <button class="btn btn-info" hx-trigger="click" hx-get="./admin/feeds/update/{{.ID}}">Edit</button>
+            <button class="btn btn-danger" hx-delete="./admin/feeds/delete/{{.ID}}">Delete</button>
+        </div>
+    </div>
+</div>

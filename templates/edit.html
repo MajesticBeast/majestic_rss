@@ -1,0 +1,27 @@
+<form hx-put="./admin/feeds/update/{{.ID}}" hx-target="this" hx-swap="outerHTML" class="gy-5">
+    <div class="row gy-5 mt-3">
+        <div class="col-1">
+            ID:<br>
+            Name:<br>
+            Created:<br>
+            Updated:<br>
+            Webhook URL:<br>
+            Feed URL:<br>
+        </div>
+        <div class="col">
+            <input type="hidden" name="ID" value="{{.ID}}">
+            {{ .ID }}<br>
+            <input type="text" name="Name" value="{{ .Name }}"><br>
+            {{ .CreatedAt }}<br>
+            {{ .UpdatedAt }}<br>
+            <input type="text" size="110" name="WebhookUrl" value="{{ .WebhookUrl }}"><br>
+            <input type="text" size="50" name="FeedUrl" value="{{ .FeedUrl }}"><br>
+        </div>
+        <div class="row">
+            <div class="col-1">
+                <button class="btn btn-info">Submit</button>
+                <button class="btn btn-danger" hx-get="./admin/feeds/{{.ID}}">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>
