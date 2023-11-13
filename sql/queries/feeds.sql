@@ -14,5 +14,8 @@ DELETE FROM feeds WHERE id = $1;
 -- name: UpdateFeed :exec
 UPDATE feeds SET name = $1, feed_url = $2, webhook_url = $3, updated_at = $4 WHERE id = $5;
 
--- name: GetFeed :one
+-- name: GetFeedByID :one
 SELECT * FROM feeds WHERE id = $1;
+
+-- name: GetFeedByName :one
+SELECT * FROM feeds WHERE name = $1;

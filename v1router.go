@@ -36,7 +36,7 @@ func (s *apiConfig) handleGetFeed(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get feed from database
-	feed, err := s.DB.GetFeed(r.Context(), int32(idInt))
+	feed, err := s.DB.GetFeedByID(r.Context(), int32(idInt))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Unable to find ID: "+err.Error())
 		return
@@ -83,7 +83,7 @@ func (s *apiConfig) handleUpdateFeedForm(w http.ResponseWriter, r *http.Request)
 	}
 
 	// Get feed from database
-	feed, err := s.DB.GetFeed(r.Context(), int32(idInt))
+	feed, err := s.DB.GetFeedByID(r.Context(), int32(idInt))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Unable to load edit form: "+err.Error())
 		return
@@ -156,7 +156,7 @@ func (s *apiConfig) handleUpdateFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	feed, err := s.DB.GetFeed(r.Context(), int32(idInt))
+	feed, err := s.DB.GetFeedByID(r.Context(), int32(idInt))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Unable to update feed: "+err.Error())
 		return
@@ -249,22 +249,26 @@ func (s *apiConfig) handleGetFeeds(w http.ResponseWriter, r *http.Request) {
 
 func (s *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Name       string `json:"name"`
-		FeedURL    string `json:"feed_url"`
-		WebhookURL string `json:"webhook_url"`
+		Name       string    `json:"name"`
+		FeedURL    string    `json:"feed_url"`
+		WebhookURL string    `json:"webhook_url"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
 	}
 	params := parameters{}
 
 	params.Name = r.PostFormValue("name")
 	params.FeedURL = r.PostFormValue("feed_url")
 	params.WebhookURL = r.PostFormValue("webhook_url")
+	params.CreatedAt = time.Now().UTC()
+	params.UpdatedAt = time.Now().UTC()
 
 	err := s.DB.CreateFeed(r.Context(), database.CreateFeedParams{
 		Name:       params.Name,
 		FeedUrl:    params.FeedURL,
 		WebhookUrl: params.WebhookURL,
-		CreatedAt:  time.Now().UTC(),
-		UpdatedAt:  time.Now().UTC(),
+		CreatedAt:  params.CreatedAt,
+		UpdatedAt:  params.UpdatedAt,
 	})
 
 	if err != nil {
@@ -272,7 +276,41 @@ func (s *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, "feed added")
+	feed, err := s.DB.GetFeedByName(r.Context(), params.Name)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Unable to update feed: "+err.Error())
+		return
+	}
+
+	// Pass feed to template
+	type templateData struct {
+		ID         int32
+		Name       string
+		FeedUrl    string
+		WebhookUrl string
+		CreatedAt  time.Time
+		UpdatedAt  time.Time
+	}
+
+	data := templateData{
+		ID:         feed.ID,
+		Name:       feed.Name,
+		FeedUrl:    feed.FeedUrl,
+		WebhookUrl: feed.WebhookUrl,
+		CreatedAt:  feed.CreatedAt,
+		UpdatedAt:  feed.UpdatedAt,
+	}
+
+	// Generate single row for a feed
+	tmpl := template.Must(template.ParseFiles(
+		"templates/feed.html",
+	))
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		fmt.Println("Unable to execute template: ", err)
+		return
+	}
 }
 
 func handleReadiness(w http.ResponseWriter, r *http.Request) {

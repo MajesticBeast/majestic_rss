@@ -45,12 +45,31 @@ func (q *Queries) DeleteFeed(ctx context.Context, id int32) error {
 	return err
 }
 
-const getFeed = `-- name: GetFeed :one
+const getFeedByID = `-- name: GetFeedByID :one
 SELECT id, name, last_post_title, feed_url, webhook_url, created_at, updated_at FROM feeds WHERE id = $1
 `
 
-func (q *Queries) GetFeed(ctx context.Context, id int32) (Feed, error) {
-	row := q.db.QueryRowContext(ctx, getFeed, id)
+func (q *Queries) GetFeedByID(ctx context.Context, id int32) (Feed, error) {
+	row := q.db.QueryRowContext(ctx, getFeedByID, id)
+	var i Feed
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LastPostTitle,
+		&i.FeedUrl,
+		&i.WebhookUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getFeedByName = `-- name: GetFeedByName :one
+SELECT id, name, last_post_title, feed_url, webhook_url, created_at, updated_at FROM feeds WHERE name = $1
+`
+
+func (q *Queries) GetFeedByName(ctx context.Context, name string) (Feed, error) {
+	row := q.db.QueryRowContext(ctx, getFeedByName, name)
 	var i Feed
 	err := row.Scan(
 		&i.ID,

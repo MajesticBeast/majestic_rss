@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <form hx-post="./feeds">
+            <form hx-post="./feeds" hx-target="#topOfList">
                 <div class="row mb-5">
                     <div class="col-1">
                         Name:<br>
@@ -29,6 +29,7 @@
         </div>
 
         {{ range $k, $v := .Feeds }}
+        <div class="row gy-5" hx-swap="outerHTML" id="topOfList"></div>
         <div class="row gy-5" hx-target="this" hx-swap="outerHTML">
             <div class="col-1">
                 ID:<br>
