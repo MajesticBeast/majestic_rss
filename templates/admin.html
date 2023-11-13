@@ -1,5 +1,5 @@
 {{ template "header.html" . }}
-<div class="container-fluid pt-5">
+<div class="container-fluid mt-5 pt-4">
     <div class="row">
         <div class="col">
             <h4>Add Feed</h4>
@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col">
             <form hx-post="./feeds" hx-target="#topOfList">
-                <div class="row mb-5">
+                <div class="row">
                     <div class="col-1">
                         Name:<br>
                         Webhook URL:<br>
@@ -26,11 +26,12 @@
                     </div>
                 </div>
             </form>
+            <hr>
         </div>
 
         {{ range $k, $v := .Feeds }}
-        <div class="row gy-5" hx-swap="outerHTML" id="topOfList"></div>
-        <div class="row gy-5" hx-target="this" hx-swap="outerHTML">
+        <div class="row gy-2" hx-swap="outerHTML" id="topOfList"></div>
+        <div class="row gy-2" hx-target="this" hx-swap="outerHTML">
             <div class="col-1">
                 ID:<br>
                 Name:<br>
@@ -49,7 +50,8 @@
             </div>
             <div class="row">
                 <div class="col-1">
-                    <button class="btn btn-info" hx-trigger="click" hx-get="./admin/feeds/update/{{$v.ID}}">Edit</button>
+                    <button class="btn btn-info" hx-trigger="click"
+                        hx-get="./admin/feeds/update/{{$v.ID}}">Edit</button>
                     <button class="btn btn-danger" hx-delete="./admin/feeds/delete/{{$v.ID}}">Delete</button>
                 </div>
             </div>
@@ -59,4 +61,5 @@
 </div>
 
 </body>
+
 </html>

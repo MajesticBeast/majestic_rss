@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/majesticbeast/majestic_rss/internal/database"
 	"html/template"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/majesticbeast/majestic_rss/internal/database"
 
 	"github.com/go-chi/chi"
 )
@@ -42,31 +43,12 @@ func (s *apiConfig) handleGetFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Pass feed to template
-	type templateData struct {
-		ID         int32
-		Name       string
-		FeedUrl    string
-		WebhookUrl string
-		CreatedAt  time.Time
-		UpdatedAt  time.Time
-	}
-
-	data := templateData{
-		ID:         feed.ID,
-		Name:       feed.Name,
-		FeedUrl:    feed.FeedUrl,
-		WebhookUrl: feed.WebhookUrl,
-		CreatedAt:  feed.CreatedAt,
-		UpdatedAt:  feed.UpdatedAt,
-	}
-
 	// Generate single row for a feed
 	tmpl := template.Must(template.ParseFiles(
 		"templates/feed.html",
 	))
 
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, feed)
 	if err != nil {
 		fmt.Println("Unable to execute template: ", err)
 		return
@@ -89,31 +71,12 @@ func (s *apiConfig) handleUpdateFeedForm(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	// Pass feed to template
-	type templateData struct {
-		ID         int32
-		Name       string
-		FeedUrl    string
-		WebhookUrl string
-		CreatedAt  time.Time
-		UpdatedAt  time.Time
-	}
-
-	data := templateData{
-		ID:         feed.ID,
-		Name:       feed.Name,
-		FeedUrl:    feed.FeedUrl,
-		WebhookUrl: feed.WebhookUrl,
-		CreatedAt:  feed.CreatedAt,
-		UpdatedAt:  feed.UpdatedAt,
-	}
-
 	// Generate edit form template and return it
 	tmpl := template.Must(template.ParseFiles(
 		"templates/edit.html",
 	))
 
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, feed)
 	if err != nil {
 		fmt.Println("Unable to execute template: ", err)
 		return
@@ -162,31 +125,12 @@ func (s *apiConfig) handleUpdateFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Pass feed to template
-	type templateData struct {
-		ID         int32
-		Name       string
-		FeedUrl    string
-		WebhookUrl string
-		CreatedAt  time.Time
-		UpdatedAt  time.Time
-	}
-
-	data := templateData{
-		ID:         feed.ID,
-		Name:       feed.Name,
-		FeedUrl:    feed.FeedUrl,
-		WebhookUrl: feed.WebhookUrl,
-		CreatedAt:  feed.CreatedAt,
-		UpdatedAt:  feed.UpdatedAt,
-	}
-
 	// Generate single row for a feed
 	tmpl := template.Must(template.ParseFiles(
 		"templates/feed.html",
 	))
 
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, feed)
 	if err != nil {
 		fmt.Println("Unable to execute template: ", err)
 		return
@@ -282,31 +226,12 @@ func (s *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Pass feed to template
-	type templateData struct {
-		ID         int32
-		Name       string
-		FeedUrl    string
-		WebhookUrl string
-		CreatedAt  time.Time
-		UpdatedAt  time.Time
-	}
-
-	data := templateData{
-		ID:         feed.ID,
-		Name:       feed.Name,
-		FeedUrl:    feed.FeedUrl,
-		WebhookUrl: feed.WebhookUrl,
-		CreatedAt:  feed.CreatedAt,
-		UpdatedAt:  feed.UpdatedAt,
-	}
-
 	// Generate single row for a feed
 	tmpl := template.Must(template.ParseFiles(
 		"templates/feed.html",
 	))
 
-	err = tmpl.Execute(w, data)
+	err = tmpl.Execute(w, feed)
 	if err != nil {
 		fmt.Println("Unable to execute template: ", err)
 		return
